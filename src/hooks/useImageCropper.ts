@@ -1,6 +1,6 @@
 
 import { useEffect, useRef, useState } from "react";
-import { Canvas, Circle, Rect, Image as FabricImage, loadSVGFromURL } from "fabric";
+import { Canvas, Circle, Rect, Image as FabricImage } from "fabric/fabric-impl";
 import { CropShape, Dimensions } from "@/types/ImageCropper";
 import { toast } from "sonner";
 
