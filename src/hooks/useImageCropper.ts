@@ -1,6 +1,6 @@
 
 import { useEffect, useRef, useState } from "react";
-import { Canvas, Circle, Rect, Image as FabricImage } from "fabric/fabric-impl";
+import { fabric } from "fabric";
 import { CropShape, Dimensions } from "@/types/ImageCropper";
 import { toast } from "sonner";
 
@@ -11,9 +11,9 @@ export const useImageCropper = (
   sizeLimit: number = 2 * 1024 * 1024 // 2MB default
 ) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [canvas, setCanvas] = useState<Canvas | null>(null);
-  const [originalImage, setOriginalImage] = useState<FabricImage | null>(null);
-  const [cropObject, setCropObject] = useState<Circle | Rect | null>(null);
+  const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
+  const [originalImage, setOriginalImage] = useState<fabric.Image | null>(null);
+  const [cropObject, setCropObject] = useState<fabric.Circle | fabric.Rect | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCropping, setIsCropping] = useState(false);
   const [croppedDataUrl, setCroppedDataUrl] = useState<string | null>(null);
