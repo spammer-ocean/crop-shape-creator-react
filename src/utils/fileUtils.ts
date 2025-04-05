@@ -10,10 +10,10 @@ export const validateImageFile = (file: File, sizeLimit: number): {
   message?: string 
 } => {
   // Check if file is an image
-  if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+  if (!file.type.startsWith('image/')) {
     return {
       valid: false,
-      message: 'Only JPEG and PNG images are supported.'
+      message: 'Only image files are supported.'
     };
   }
   
@@ -21,7 +21,7 @@ export const validateImageFile = (file: File, sizeLimit: number): {
   if (file.size > sizeLimit) {
     return {
       valid: false,
-      message: `File size exceeds the limit of ${Math.round(sizeLimit / (1024 * 1024) * 10) / 10} MB.`
+      message: `File size exceeds the limit of ${formatBytes(sizeLimit)}.`
     };
   }
   
