@@ -6,13 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 const Index = () => {
-  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
-
   // Handle image upload
   const handleImageUpload = (file: File) => {
     console.log("Image uploaded:", file);
-    // In a real application, you might want to do something with the file here
-    toast.success(`Image "${file.name}" uploaded successfully!`);
+    toast.success(`Image "${file.name}" processed successfully!`);
   };
 
   return (
@@ -23,7 +20,7 @@ const Index = () => {
             Simple Image Upload Component
           </h1>
           <p className="text-center text-gray-500 dark:text-gray-400 mt-2">
-            Upload and preview images with easy to use component
+            Upload and save images with ease
           </p>
         </div>
       </header>
@@ -76,7 +73,7 @@ const Index = () => {
                 <li>Drag and drop an image onto the upload area or click to select a file</li>
                 <li>Once uploaded, a preview will be shown with file information</li>
                 <li>You can download the image or remove it</li>
-                <li>When the saveToPublic option is enabled, images will be saved to the project&apos;s public folder</li>
+                <li>When the saveToPublic option is enabled, images will be saved to the project's public folder</li>
               </ol>
             </TabsContent>
             

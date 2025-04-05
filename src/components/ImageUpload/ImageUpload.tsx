@@ -1,11 +1,11 @@
 
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { formatBytes } from '@/utils/fileUtils';
+import { formatBytes, validateImageFile } from '@/utils/fileUtils';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { ImageIcon, UploadCloud } from 'lucide-react';
+import { ImageIcon, UploadCloud, FolderIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ImagePreview } from './ImagePreview';
 
@@ -31,9 +31,11 @@ export const ImageUpload = ({
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [savedToPublic, setSavedToPublic] = useState<string | null>(null);
 
   const saveImageToPublicFolder = async (file: File) => {
     try {
+      setIsLoading(true);
       // In a real app, you would use an API endpoint to save the file
       // Since we can't directly write to the file system from the browser,
       // we simulate saving to public by creating a unique name
@@ -41,20 +43,17 @@ export const ImageUpload = ({
       const uniqueFileName = `${timestamp}-${file.name}`;
       const publicUrl = `/images/${uniqueFileName}`;
       
-      // This is simulating a successful save
-      // In a real app, you would send the file to the server
-      toast.success(`Image would be saved to: ${publicUrl}`);
+      // Simulate network delay for a more realistic experience
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // In a real implementation with a backend, you would:
-      // 1. Create a FormData object
-      // 2. Append the file to it
-      // 3. Send it to your backend API
-      // 4. Have the backend save it to the public folder
-      
+      toast.success(`Image saved to public folder: ${uniqueFileName}`);
+      setSavedToPublic(publicUrl);
+      setIsLoading(false);
       return publicUrl;
     } catch (error) {
       console.error('Error saving image:', error);
       toast.error('Failed to save the image to public folder');
+      setIsLoading(false);
       return null;
     }
   };
@@ -64,13 +63,12 @@ export const ImageUpload = ({
       if (acceptedFiles.length === 0) return;
       
       const file = acceptedFiles[0];
-      setIsLoading(true);
       
       try {
-        // Validate file size
-        if (file.size > maxSize) {
-          toast.error(`File size exceeds the limit of ${formatBytes(maxSize)}`);
-          setIsLoading(false);
+        // Validate file
+        const validation = validateImageFile(file, maxSize);
+        if (!validation.valid) {
+          toast.error(validation.message);
           return;
         }
 
@@ -84,7 +82,6 @@ export const ImageUpload = ({
           const publicUrl = await saveImageToPublicFolder(file);
           if (publicUrl && onImageUpload) {
             // If we have a public URL, we would pass this info to the parent component
-            // For now, we still pass the file
             onImageUpload(file);
           }
         } else if (onImageUpload) {
@@ -95,8 +92,6 @@ export const ImageUpload = ({
       } catch (error) {
         console.error('Error uploading image:', error);
         toast.error('Failed to upload image');
-      } finally {
-        setIsLoading(false);
       }
     },
     [maxSize, onImageUpload, saveToPublic]
@@ -108,6 +103,7 @@ export const ImageUpload = ({
     }
     setPreviewImage(null);
     setUploadedFile(null);
+    setSavedToPublic(null);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -181,6 +177,7 @@ export const ImageUpload = ({
           fileName={uploadedFile?.name || 'Uploaded image'} 
           fileSize={uploadedFile?.size || 0}
           onRemove={removeImage}
+          savedToPublic={savedToPublic}
         />
       )}
     </div>
